@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { IconPlus, IconAtom, IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react'
+import { IconPlus, IconAtom, IconArrowBarLeft, IconArrowBarRight, IconBookmark } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { HistorySection } from '@/components/sidebar/history-section'
@@ -53,8 +53,9 @@ export function AppSidebar() {
 
         {/* Content */}
         <div className="flex flex-col h-full">
-          {/* New Discovery Button */}
-          <div className="px-2 py-4">
+          {/* Action Buttons */}
+          <div className="px-2 py-4 space-y-3">
+            {/* New Discovery Button */}
             {isOpen ? (
               <Button asChild variant="outline" className="w-full justify-start">
                 <Link href="/" className="flex items-center gap-2">
@@ -73,6 +74,29 @@ export function AppSidebar() {
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>New Discovery</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Saved Artifacts Button */}
+            {isOpen ? (
+              <Button asChild variant="ghost" className="w-full justify-start">
+                <Link href="/artifacts" className="flex items-center gap-2">
+                  <IconBookmark className="size-4" />
+                  <span>Saved artifacts</span>
+                </Link>
+              </Button>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button asChild variant="ghost" size="icon" className="w-full">
+                    <Link href="/artifacts" className="flex items-center justify-center">
+                      <IconBookmark className="size-4" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Saved artifacts</p>
                 </TooltipContent>
               </Tooltip>
             )}
