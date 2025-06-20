@@ -5,7 +5,7 @@ import {
   IconX, 
   IconBrain, 
   IconStethoscope, 
-  IconExclamationTriangle, 
+  IconAlertTriangle, 
   IconMoodSmile, 
   IconDroplet, 
   IconShield 
@@ -20,7 +20,7 @@ interface PropertyBadgesProps {
 const propertyIcons = {
   BBBP: IconBrain,        // Blood-Brain Barrier - brain icon
   HIA: IconStethoscope,   // Human Intestinal Absorption - medical icon
-  Mutag: IconExclamationTriangle, // Mutagenicity - warning icon
+  Mutag: IconAlertTriangle, // Mutagenicity - warning icon
   DRD2: IconMoodSmile,    // Dopamine Receptor - mood/psychiatric icon
   plogP: IconDroplet,     // Lipophilicity - droplet icon
   QED: IconShield         // Drug-likeness - shield/quality icon
