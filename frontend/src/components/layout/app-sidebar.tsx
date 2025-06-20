@@ -1,39 +1,42 @@
 "use client"
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-  SidebarTrigger,
-  useSidebar
-} from '@/components/ui/sidebar'
 import { 
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { IconPlus, IconAtom } from '@tabler/icons-react'
+import { IconPlus, IconAtom, IconArrowBarLeft, IconArrowBarRight } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { HistorySection } from '@/components/sidebar/history-section'
 import { HistorySkeleton } from '@/components/sidebar/history-skeleton'
+import { useSidebarState } from '@/hooks/use-sidebar'
 
 export function AppSidebar() {
-  const { state } = useSidebar()
-  const isCollapsed = state === 'collapsed'
+  const { isOpen, toggle } = useSidebarState()
 
   return (
     <TooltipProvider>
-      <Sidebar side="left" variant="sidebar" collapsible="icon">
-        <SidebarHeader className="flex flex-row justify-between items-center">
-          {isCollapsed ? (
-            <div className="flex items-center justify-center w-full py-3">
+      <div
+        className={cn(
+          "relative bottom-0 left-0 top-0 z-[50] flex h-screen flex-shrink-0 flex-col border-r border-border transition-all duration-200 bg-background",
+          isOpen
+            ? "w-[240px]"
+            : "w-[60px]"
+        )}
+      >
+        {/* Header */}
+        <div className="flex flex-row justify-between items-center border-b border-border/50 px-2 py-3">
+          {isOpen ? (
+            <Link href="/" className="flex items-center gap-2">
+              <IconAtom className="size-5" />
+              <span className="font-semibold text-sm">ALO</span>
+            </Link>
+          ) : (
+            <div className="flex items-center justify-center w-full">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link href="/" className="flex items-center justify-center">
@@ -45,52 +48,77 @@ export function AppSidebar() {
                 </TooltipContent>
               </Tooltip>
             </div>
-          ) : (
-            <>
-              <Link href="/" className="flex items-center gap-2 px-2 py-3">
-                <IconAtom className="size-5" />
-                <span className="font-semibold text-sm">ALO</span>
-              </Link>
-              <SidebarTrigger />
-            </>
           )}
-        </SidebarHeader>
-        <SidebarContent className="flex flex-col px-2 py-4 h-full">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              {isCollapsed ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <SidebarMenuButton asChild>
-                      <Link href="/" className="flex items-center justify-center">
-                        <IconPlus className="size-4" />
-                      </Link>
-                    </SidebarMenuButton>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p>New Discovery</p>
-                  </TooltipContent>
-                </Tooltip>
-              ) : (
-                <SidebarMenuButton asChild>
-                  <Link href="/" className="flex items-center gap-2">
-                    <IconPlus className="size-4" />
-                    <span>New Discovery</span>
-                  </Link>
-                </SidebarMenuButton>
-              )}
-            </SidebarMenuItem>
-          </SidebarMenu>
-          {!isCollapsed && (
-            <div className="flex-1 overflow-y-auto">
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col h-full">
+          {/* New Discovery Button */}
+          <div className="px-2 py-4">
+            {isOpen ? (
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href="/" className="flex items-center gap-2">
+                  <IconPlus className="size-4" />
+                  <span>New Discovery</span>
+                </Link>
+              </Button>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button asChild variant="outline" size="icon" className="w-full">
+                    <Link href="/" className="flex items-center justify-center">
+                      <IconPlus className="size-4" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>New Discovery</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+          
+          {/* History Section - only show when expanded */}
+          {isOpen && (
+            <div className="flex-1 overflow-y-auto px-2">
               <Suspense fallback={<HistorySkeleton />}>
                 <HistorySection />
               </Suspense>
             </div>
           )}
-        </SidebarContent>
-        <SidebarRail />
-      </Sidebar>
+          
+          {/* Toggle Button */}
+          <div className="mt-auto p-2 border-t border-border/50">
+            {isOpen ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggle}
+                className="w-full justify-start"
+              >
+                <IconArrowBarLeft size={16} strokeWidth={2} />
+                <span className="ml-2">Close</span>
+              </Button>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggle}
+                    className="w-full"
+                  >
+                    <IconArrowBarRight size={16} strokeWidth={2} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Expand Sidebar</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        </div>
+      </div>
     </TooltipProvider>
   )
 }
