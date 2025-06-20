@@ -1,18 +1,28 @@
 "use client"
 
 import { IconSearch } from "@tabler/icons-react"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useSidebar } from "@/hooks/use-sidebar"
+import { cn } from "@/lib/utils"
 
 export function SidebarSearch() {
+  const { isOpen } = useSidebar()
+
   return (
-    <div className="p-4">
-      <div className="relative">
-        <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Search"
-          className="pl-9"
-        />
-      </div>
-    </div>
+    <Button
+      size={isOpen ? "sm" : "icon"}
+      variant="secondary"
+      className={cn(
+        "relative w-full rounded-full",
+        "justify-center"
+      )}
+    >
+      <IconSearch
+        size={16}
+        strokeWidth={2}
+        className={cn(isOpen && "absolute left-2")}
+      />
+      {isOpen && "Search"}
+    </Button>
   )
 }
