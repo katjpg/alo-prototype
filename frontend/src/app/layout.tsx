@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import "../styles/globals.css"
 import { AppSidebar } from "@/components/layout/app-sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
 export const metadata: Metadata = {
   title: "ALO - AI-based Ligand Optimization",
@@ -15,12 +16,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <div className="flex min-h-screen">
+        <SidebarProvider>
           <AppSidebar />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
+          <SidebarInset>
+            <main className="flex-1">
+              {children}
+            </main>
+          </SidebarInset>
+        </SidebarProvider>
       </body>
     </html>
   )

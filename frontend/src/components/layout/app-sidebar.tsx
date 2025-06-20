@@ -1,50 +1,96 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { useSidebar } from "@/hooks/use-sidebar"
-import { SidebarHeader } from "@/components/sidebar/sidebar-header"
-import { SidebarSearch } from "@/components/sidebar/sidebar-search"
-import { SidebarContent } from "@/components/sidebar/sidebar-content"
-import { SidebarFooter } from "@/components/sidebar/sidebar-footer"
-import { SidebarToggle } from "@/components/sidebar/sidebar-toggle"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar
+} from '@/components/ui/sidebar'
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { IconPlus, IconAtom } from '@tabler/icons-react'
+import Link from 'next/link'
+import { Suspense } from 'react'
+import { HistorySection } from '@/components/sidebar/history-section'
+import { HistorySkeleton } from '@/components/sidebar/history-skeleton'
 
 export function AppSidebar() {
-  const { isOpen } = useSidebar()
+  const { state } = useSidebar()
+  const isCollapsed = state === 'collapsed'
 
   return (
-    <div
-      className={cn(
-        "relative bottom-0 left-0 top-0 z-[50] flex h-[100dvh] flex-shrink-0 flex-col border-r border-dashed border-border/50 py-2 transition-all duration-200",
-        isOpen
-          ? "bg-background border-border/70 shadow-xs w-[240px] border-r"
-          : "w-[50px]"
-      )}
-    >
-      <div className="flex w-full flex-1 flex-col overflow-hidden">
-        {/* Header Section */}
-        <div className="flex w-full flex-col gap-3 px-2">
-          <SidebarHeader />
-          <SidebarSearch />
-        </div>
-
-        {/* Content Section */}
-        <div
-          className={cn(
-            "border-border/70 mt-3 w-full flex-1 overflow-y-auto border-t border-dashed p-3",
-            isOpen ? "flex" : "hidden"
+    <TooltipProvider>
+      <Sidebar side="left" variant="sidebar" collapsible="icon">
+        <SidebarHeader className="flex flex-row justify-between items-center">
+          {isCollapsed ? (
+            <div className="flex items-center justify-center w-full py-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link href="/" className="flex items-center justify-center">
+                    <IconAtom className="size-5" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>ALO - AI-based Ligand Optimization</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          ) : (
+            <>
+              <Link href="/" className="flex items-center gap-2 px-2 py-3">
+                <IconAtom className="size-5" />
+                <span className="font-semibold text-sm">ALO</span>
+              </Link>
+              <SidebarTrigger />
+            </>
           )}
-        >
-          <SidebarContent />
-        </div>
-
-        {/* Footer Section */}
-        <div className="mt-auto w-full p-2">
-          <div className="flex w-full flex-col gap-2">
-            <SidebarToggle />
-            <SidebarFooter />
-          </div>
-        </div>
-      </div>
-    </div>
+        </SidebarHeader>
+        <SidebarContent className="flex flex-col px-2 py-4 h-full">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              {isCollapsed ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SidebarMenuButton asChild>
+                      <Link href="/" className="flex items-center justify-center">
+                        <IconPlus className="size-4" />
+                      </Link>
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>New Discovery</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <SidebarMenuButton asChild>
+                  <Link href="/" className="flex items-center gap-2">
+                    <IconPlus className="size-4" />
+                    <span>New Discovery</span>
+                  </Link>
+                </SidebarMenuButton>
+              )}
+            </SidebarMenuItem>
+          </SidebarMenu>
+          {!isCollapsed && (
+            <div className="flex-1 overflow-y-auto">
+              <Suspense fallback={<HistorySkeleton />}>
+                <HistorySection />
+              </Suspense>
+            </div>
+          )}
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+    </TooltipProvider>
   )
 }
