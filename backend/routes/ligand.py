@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.properties import LigandPropRequest, LigandPropResponse
+from models.ligand import LigandPropRequest, LigandPropResponse
 from services.properties import calc_props
 
 router = APIRouter(tags=["Properties"])
